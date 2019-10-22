@@ -99,7 +99,7 @@ class jyVideoStreamControl:
         # 图片存放路径
         self.__strIMGPath = None
         if self.__strPosition != 'Default' and self.__strGroup != 'Default':
-            self.__strIMGPath = strRootPath + '/Apps/Resource/CatchFrame/%s/%s' % (self.__strGroup, self.__strPosition)
+            self.__strIMGPath = (strRootPath + '/Apps/Resource/CatchFrame/%s/%s' % (self.__strGroup, self.__strPosition))
             if not os.path.exists(self.__strIMGPath):
                 os.makedirs(self.__strIMGPath)
 
@@ -137,6 +137,7 @@ class jyVideoStreamControl:
             os.mkdir(self.__strIMGPath + '/' + strFolderName)
 
         while ret:
+            print(self.__iIndex)
             ret, frame = self.__pStream.read()
             strDay = datetime.datetime.now().strftime('%Y-%m-%d')
             if strLastDay != strDay:
@@ -144,9 +145,12 @@ class jyVideoStreamControl:
                 if not os.path.exists(self.__strIMGPath + '/' + strFolderName):
                     os.mkdir(self.__strIMGPath + '/' + strFolderName)
 
-            strIMGName = datetime.datetime.now().strftime('%H:%M:%S')
+            strIMGName = datetime.datetime.now().strftime('%H_%M_%S')
             try:
-                cv2.imwrite(self.__strIMGPath + '/' + strFolderName + '/' + strIMGName + '.jpg', frame, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+                # print(self.__strIMGPath + '/' + strFolderName + '/' + strIMGName + '.jpg')
+                strIMGPath = str(self.__strIMGPath + '/' + strFolderName + '/' + strIMGName + '.jpg')
+                # cv2.imwrite(strIMGPath, frame, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+                cv2.imencode('.jpg', frame)[1].tofile(strIMGPath)
             except Exception as e:
                 print(e)
             # 提取频率 也可以换一种定义方式
